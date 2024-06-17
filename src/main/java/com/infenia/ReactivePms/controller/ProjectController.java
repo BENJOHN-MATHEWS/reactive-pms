@@ -2,12 +2,16 @@ package com.infenia.ReactivePms.controller;
 
 import com.infenia.ReactivePms.entity.Project;
 import com.infenia.ReactivePms.service.ProjectService;
+import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,8 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @Slf4j
+@Validated
 @RequestMapping("/api/project")
 public class ProjectController {
 
@@ -46,13 +54,13 @@ public class ProjectController {
 
     //Add new project
     @PostMapping("/addProject")
-    public ResponseEntity<Mono<Project>> addProject(@RequestBody Project project) {
+    public ResponseEntity<Mono<Project>> addProject(@Valid @RequestBody Project project) {
         return new ResponseEntity<Mono<Project>>(projectService.addProject(project),HttpStatus.CREATED);
     }
 
     //Update by id
     @PutMapping("/update/{id}")
-    public ResponseEntity<Mono<Project>> update(@PathVariable Long id, @RequestBody Project updatedProject) {
+    public ResponseEntity<Mono<Project>> update(@PathVariable Long id,@Valid @RequestBody Project updatedProject) {
         return new ResponseEntity<Mono<Project>>(projectService.update(id, updatedProject),HttpStatus.ACCEPTED);
 
     }
@@ -79,14 +87,14 @@ public class ProjectController {
 
     //Add new project with Query Method
     @PostMapping("/qm/addProject")
-    public ResponseEntity<Mono<Void>> addProjectQM(@RequestBody Project newProject) {
+    public ResponseEntity<Mono<Void>> addProjectQM(@Valid @RequestBody Project newProject) {
         return new ResponseEntity<Mono<Void>>(projectService.addProjectQM(newProject),HttpStatus.CREATED);
     }
 
     //Update by id with Query Method
-    //Not fully functioning working on it
+    //Not fully functioning, working on it
     @PutMapping("/qm/update/{id}")
-    public ResponseEntity<Mono<Void>> updateProjectQM(@PathVariable Long id, @RequestBody Project updatedProject) {
+    public ResponseEntity<Mono<Void>> updateProjectQM(@PathVariable Long id,@Valid @RequestBody Project updatedProject) {
         return new ResponseEntity<Mono<Void>>(projectService.updateProjectQM(id,updatedProject),HttpStatus.ACCEPTED);
     }
 
